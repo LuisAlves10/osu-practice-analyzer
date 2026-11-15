@@ -15,7 +15,7 @@ Build an offline-first, open-source Windows 11 desktop application that helps os
 
 - docs/ owns product scope, architecture, source evidence, data contracts, phase gates and accepted decisions.
 - Keep phase-2 probes under spikes/ and tests under tests/. Production code will live under src/ with independent source adapters, raw and normalized storage, domain, replay, analytics, training, exports, online sync, and desktop app boundaries.
-- Bootstrap checks: git status --short and git diff --check. Phase 0 has no build or runtime dependencies. Use the setup, test and build commands in the README as soon as code lands.
+- Install a stable .NET 10 SDK. Run `dotnet restore tests/SourceSpikes.Tests`, `dotnet build spikes/SourceSpikes -c Release`, `dotnet test tests/SourceSpikes.Tests -c Release`, and `git diff --check`. Reproduce source checks with [the probe guide](docs/PROVAS_TECNICAS.md).
 - Minimum probe tests cover content identity, a mismatched map, absent or invalid provider data, and a lost connection ending in unknown. Start persistence tests with repeat import, profile isolation, and two distinct attempts on the same map.
 
 ## Phase and Git protocol

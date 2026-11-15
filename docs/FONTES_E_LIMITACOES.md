@@ -2,14 +2,15 @@
 
 Consulta em 2026-11-15. A matriz usa CONFIRMADO_EM_TESTE_REAL, DOCUMENTADO_NAO_TESTADO, EXPERIMENTAL, NAO_SUPORTADO e DESCONHECIDO. Veja [STATUS.md](STATUS.md) para a execução local e os comandos da Fase 2.
 
-| Capacidade | Estado ao fim da investigação | Evidência e critério de confirmação |
+| Capacidade | Estado ao fim da Fase 2 | Evidência e critério de confirmação |
 | --- | --- | --- |
 | Encontrar dados do lazer no caminho padrão Windows | CONFIRMADO_EM_TESTE_REAL | osu!lazer 2026.1005.0, diretório de dados padrão com índice e blobs SHA-256. |
 | Selecionar diretório personalizado | DOCUMENTADO_NAO_TESTADO | O lazer lê `storage.ini` via `StorageConfig.FullPath`; testar um caminho explicitamente escolhido e validar o depósito. [OsuStorage] e [StorageConfig]. |
 | Obter identidade de conta e isolar perfis | DOCUMENTADO_NAO_TESTADO | tosu expõe perfil; lazer pode carregar ID no bloco estendido de replay. Confirmar troca de perfil, conta offline e nomes alterados antes de associar. [Tosu v2] e [Decoder]. |
-| Identificar dificuldade, set e edição local | DOCUMENTADO_NAO_TESTADO | O arquivo tem IDs opcionais; o Realm tem entidades e IDs próprios. Provar SHA-256 do blob e distinguir bytes diferentes para o mesmo ID. Mapeamento completo do catálogo exige vínculo explícito de origem. [File store], [BeatmapInfo] e [Formato .osu]. |
+| Identificar versões de dificuldade e ler IDs declarados | CONFIRMADO_EM_TESTE_REAL | O spike leu mapas presentes no lazer 2026.1005.0 e conferiu os bytes por SHA-256. Edições homônimas com os mesmos IDs foram testadas com fixture sintética. Catálogo e vínculo de set por origem seguem DOCUMENTADO_NAO_TESTADO. [File store], [BeatmapInfo] e [Formato .osu]. |
 | Histórico de scores e vínculo ao mapa | DOCUMENTADO_NAO_TESTADO | Score local possui vínculo por hash e jogo exporta replay quando há asset. Enumerar scores depende de estratégia de snapshot consistente e schema versionado. [BeatmapInfo] e [Exportador]. |
-| Localizar replay e identificar a dificuldade | DOCUMENTADO_NAO_TESTADO | O exportador copia o asset persistido. Header replay informa MD5 do mapa, ancorado no SHA-256 dos bytes da dificuldade local. Testar um par real e um checksum divergente. [Exportador], [Encoder] e [Formato .osr]. |
+| Localizar replay e identificar a dificuldade | CONFIRMADO_EM_TESTE_REAL | No lazer 2026.1005.0, o spike identificou contêineres estendidos standard e vinculou replays reais a versões por MD5 com integridade SHA-256. Rejeição de checksum divergente exercitada com fixture. Decode de frames segue pendente. [Exportador], [Encoder] e [Formato .osr]. |
+| .osr stable e versões fora da faixa revisada | NAO_SUPORTADO | Este spike aceita versões de contêiner estendido 30000001–30000019 no ruleset standard. [Encoder]. |
 | Observar playing / resultado / flag de fail | DOCUMENTADO_NAO_TESTADO | tosu v4.26.3 expõe estados e `play.failed`. A flag pertence ao estado de jogo e pode ser resetada. Resultado confirma tela observada. Validar sequência e significado em uma sessão com versão conhecida. [Enum tosu], [Tosu v2] e [LazerInstance]. |
 | Distinguir retry explícito, abort, pass e replay assistido | DESCONHECIDO | A implementação reseta telemetria ao recuar o relógio, também observável com seek. O contrato revisado não fornece ID de tentativa nem sinal inequívoco para cada transição. Tratar recuo como lacuna experimental e guardar a incerteza. [Tosu v2] e [LazerInstance]. |
 | Mods, rate, OD/AR/CS/HP e scoring efetivos | DOCUMENTADO_NAO_TESTADO | tosu expõe atributos e mods/rate. Lazer lê mods parametrizados, estatísticas e scoring no bloco estendido. Confirmar semântica por modalidade e versão com controles no jogo. [Tosu v2] e [Decoder]. |
@@ -18,7 +19,7 @@ Consulta em 2026-11-15. A matriz usa CONFIRMADO_EM_TESTE_REAL, DOCUMENTADO_NAO_T
 | Perfil, top/recent, mapas e snapshots online | DOCUMENTADO_NAO_TESTADO | A API v2 documenta perfil, estatísticas, histórico de rank e pontuações; `include_fails` é para recentes. Usar timestamps de observação, cache e backoff. [osu! API]. |
 | OAuth público de desktop sem secret embutido | DESCONHECIDO | API v2 documenta authorization code e client credentials com secret. PKCE não aparece no contrato consultado. A integração autenticada depende de uma estratégia pública validada. [OAuth]. |
 | Cruzar score local/online, deduplicar e retomar checkpoint | DESCONHECIDO | Usar IDs verificados e perfis isolados. Testar reimportação, candidatos ambíguos e reinício na Fase 3. |
-| Operar sem tosu; lidar com queda ou reconectar | EXPERIMENTAL | Provar indisponibilidade e lacunas no spike. Preparar reconexão e persistência transacional na Fase 3. |
+| Operar sem tosu; lidar com queda ou reconectar | EXPERIMENTAL | Captura em loopback indisponível no ambiente e fechamento com resultado desconhecido no servidor sintético. Reconexão e persistência transacional seguem para a Fase 3. |
 | CPU, memória e disco durante uma partida | DESCONHECIDO | Medir baseline e execução com janela, hardware e versões fixos, antes de habilitar coleta contínua. |
 
 ## Revisões, licenças e cautelas
