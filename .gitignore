@@ -1,0 +1,47 @@
+# Local credentials and private instructions
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*credentials*.json
+*token*.json
+*oauth*.json
+PROMPT_MESTRE*.md
+prompt-mestre*.md
+.codex-private/
+
+# Toolchains
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.py[cod]
+bin/
+obj/
+.vs/
+node_modules/
+target/
+build/
+dist/
+*.egg-info/
+
+# Player data and probe output
+*.db
+*.db-*
+*.sqlite*
+*.realm*
+*.log
+*.bak
+*.osr
+*.osz
+*.osu
+*.olz
+*.jsonl
+backups/
+exports/
+scratch/
+fixtures/private/
+fixtures/real/
