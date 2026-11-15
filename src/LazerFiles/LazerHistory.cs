@@ -20,7 +20,8 @@ public static class LazerHistory
     private static ReadOnlySpan<byte> MapPrefix => "osu file format v"u8;
     private static ReadOnlySpan<byte> Utf8Bom => [0xef, 0xbb, 0xbf];
 
-    public static HistoryEvidence Scan(string dataRoot)
+    public static HistoryEvidence Scan(string dataRoot,
+        Action<byte[], MapVersion?, ReplayHeader?>? onAsset = null, CancellationToken cancellation = default)
     {
         string store = Path.Combine(dataRoot, "files");
         if (!Directory.Exists(store) || File.GetAttributes(store).HasFlag(FileAttributes.ReparsePoint))
@@ -40,6 +41,7 @@ public static class LazerHistory
 
         foreach (string path in Directory.EnumerateFiles(store, "*", options))
         {
+            cancellation.ThrowIfCancellationRequested();
             string sha256 = Path.GetFileName(path);
             if (!IsStorePath(store, path, sha256))
                 continue;
@@ -50,6 +52,8 @@ public static class LazerHistory
             }
             scanned++;
 
+            byte[] bytes;
+            bool isMap;
             try
             {
                 using var stream = new FileStream(path, FileMode.Open, FileAccess.Read,
@@ -59,12 +63,12 @@ public static class LazerHistory
                     continue;
 
                 stream.ReadExactly(prefix);
-                bool isMap = TrimBom(prefix).StartsWith(MapPrefix);
+                isMap = TrimBom(prefix).StartsWith(MapPrefix);
                 if (!isMap && !LooksLikeReplay(prefix))
                     continue;
 
                 stream.Position = 0;
-                byte[] bytes = new byte[(int)length];
+                bytes = new byte[(int)length];
                 stream.ReadExactly(bytes);
                 if (stream.ReadByte() != -1 || !sha256.Equals(Hash(bytes), StringComparison.Ordinal))
                 {
@@ -72,18 +76,27 @@ public static class LazerHistory
                     continue;
                 }
 
-                if (isMap && ReadMap(bytes) is { Ruleset: 0 } map)
-                    maps.Add(map);
-                else if (!isMap && ReadReplay(bytes) is { } replay)
-                    replays.Add(replay);
             }
             catch (IOException)
             {
                 unreadable++;
+                continue;
             }
             catch (UnauthorizedAccessException)
             {
                 unreadable++;
+                continue;
+            }
+
+            if (isMap && ReadMap(bytes) is { Ruleset: 0 } map)
+            {
+                maps.Add(map);
+                onAsset?.Invoke(bytes, map, null);
+            }
+            else if (!isMap && ReadReplay(bytes) is { } replay)
+            {
+                replays.Add(replay);
+                onAsset?.Invoke(bytes, null, replay);
             }
         }
 

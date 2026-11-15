@@ -66,7 +66,7 @@ public sealed class LazerHistoryTests
         }
     }
 
-    private static byte[] Map(string x) => Encoding.UTF8.GetBytes($"""
+    internal static byte[] Map(string x) => Encoding.UTF8.GetBytes($"""
         osu file format v14
 
         [General]
@@ -82,7 +82,7 @@ public sealed class LazerHistoryTests
         {x},64,1500,1,0,0:0:0:0:
         """);
 
-    private static byte[] Replay(string mapHash, long id, int format = 30_000_003)
+    internal static byte[] Replay(string mapHash, long id, int format = 30_000_003)
     {
         using var bytes = new MemoryStream();
         using var writer = new BinaryWriter(bytes);
@@ -103,7 +103,7 @@ public sealed class LazerHistoryTests
         return bytes.ToArray();
     }
 
-    private static void Put(string root, byte[] bytes, string? hash = null)
+    internal static void Put(string root, byte[] bytes, string? hash = null)
     {
         hash ??= Convert.ToHexStringLower(SHA256.HashData(bytes));
         string bucket = Path.Combine(root, "files", hash[..1], hash[..2]);
