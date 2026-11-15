@@ -8,6 +8,7 @@ Build an offline-first, open-source Windows 11 desktop application that helps os
 
 - Start each run with this file, [status](docs/STATUS.md), [roadmap](docs/ROADMAP.md), and the owning documents for the current phase. Resolve contract changes in their owning documents and log durable decisions in [ADRs](docs/DECISOES.md).
 - Local observations are primary. Preserve source, observation time, completeness and version. Distinguish FACT, FACT_SNAPSHOT, DERIVED, INFERENCE and UNAVAILABLE. Keep unavailable fields nullable with a reason. Treat attempt, score and replay as distinct entities.
+- Classify PASS, FAIL, RESTART and QUIT only from explicit evidence. Leave missing, ambiguous or conflicting outcomes UNKNOWN. A replay, a clock rewind or an interrupted source cannot establish an outcome alone. Keep evidence reprocessable. Main performance metrics include only PASS and FAIL, and every metric reports coverage of its required inputs. See [analytics](docs/ANALYTICS.md).
 - Use exported files or verified read-only source operations. Never modify game files, touch live Realm without a validated safe strategy, read game memory directly, inject code, automate input, or assist during gameplay. tosu is a separate optional loopback source.
 - Keep the private master specification, real replays/maps, player data, logs, credentials, and raw fixtures out of Git and public artifacts. Keep the app local by default. Tests may use labeled synthetic inputs. Production features must use real data and fail honestly.
 
@@ -16,6 +17,7 @@ Build an offline-first, open-source Windows 11 desktop application that helps os
 - docs/ owns product scope, architecture, source evidence, data contracts, phase gates and accepted decisions.
 - Keep phase-2 probes under spikes/ and tests under tests/. Production code will live under src/ with independent source adapters, raw and normalized storage, domain, replay, analytics, training, exports, online sync, and desktop app boundaries.
 - Install a stable .NET 10 SDK. Run `dotnet restore tests/SourceSpikes.Tests`, `dotnet build spikes/SourceSpikes -c Release`, `dotnet test tests/SourceSpikes.Tests -c Release`, and `git diff --check`. Reproduce source checks with [the probe guide](docs/PROVAS_TECNICAS.md).
+- Build the history CLI with `dotnet build src/HistoryCli -c Release`. The [persistence guide](docs/PERSISTENCIA.md) covers real imports and profile selection.
 - Minimum probe tests cover content identity, a mismatched map, absent or invalid provider data, and a lost connection ending in unknown. Start persistence tests with repeat import, profile isolation, and two distinct attempts on the same map.
 
 ## Phase and Git protocol

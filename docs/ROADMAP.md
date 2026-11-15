@@ -5,7 +5,7 @@
 | 0 | Governança, licença do código próprio, Git auditado e publicação verificada ou bloqueio registrado. |
 | 1 | Evidência primária versionada, matriz de fontes, ADR de stack e identidade das entidades. |
 | 2 | Provas isoladas de leitura histórica e observação tosu, incluindo resultado desconhecido perante uma lacuna. Encerrar a primeira execução aqui. |
-| 3 | SQLite, origens RAW e normalizadas, deduplicação e perfis. Preservar duas tentativas distintas da mesma dificuldade após reinício e demonstrar reimportação idempotente. |
+| 3 | SQLite, origens RAW e normalizadas, deduplicação e perfis. Preservar duas tentativas distintas da mesma dificuldade após reinício e demonstrar reimportação idempotente. Validar migrações, ambiguidades e a projeção de desempenho com PASS e FAIL. |
 | 4 | Biblioteca por mapa e comparação de duas tentativas reais. |
 | 5 | Replay e timeline. Validar contagens contra referências e tornar divergências visíveis. |
 | 6 | Diagnóstico global com amostra comparável em múltiplos mapas e teste negativo de causalidade. |

@@ -19,4 +19,12 @@ As saídas agregadas exatas do teste real, o JSONL de diagnóstico e os logs de 
 
 **Limitações abertas** — validação do tosu em partidas reais e com mudança de perfil, descoberta automática de pasta personalizada, snapshots seguros de Realm, importação de scores sem replay, mods e frames descompactados, julgamento, custo em jogo e OAuth desktop.
 
-**Próxima ação** — iniciar a Fase 3 numa próxima execução. Criar a primeira migração SQLite para perfil, versão de mapa, replay, score e observação RAW. Implementar importação explícita de arquivos de mapa/replay recuperados e provar, com um par de replays distintos para a mesma dificuldade, que o armazenamento preserva ambos após reinício e que uma segunda importação não cria duplicatas. Prosseguir com normalização e checkpoints do tosu quando uma execução real controlada fornecer a evidência necessária.
+## Gate da Fase 3
+
+Implementados SQLite com duas migrações, isolamento de perfis, ingestão incremental de assets, RAW reprocessável e projeções de vínculo, classificação e desempenho. A captura opcional tem um contrato de persistência por UUID de captura e sequência. [Persistência](PERSISTENCIA.md) · [Regra de contabilização](ANALYTICS.md)
+
+- **Teste real** — importação, reabertura em processo independente e reimportação no mesmo perfil preservaram as contagens. Dois replays distintos na mesma versão foram conferidos novamente lendo os bytes persistidos e comparando SHA-256 e MD5. `PRAGMA integrity_check` retornou `ok`; `foreign_key_check` não retornou violações. Os resultados ficaram UNKNOWN e fora das estatísticas principais. As contagens e o banco privados ficaram em `scratch/`.
+- **Testes automatizados** — 20 passaram em Release. Cobrem persistência após reabertura, migração V1–V2, rollback em escrita interrompida, cancelamento, arquivos corrompidos, mapa ausente e vínculo ambíguo (colisão simulada), deduplicação por origem, isolamento, atualização de resultado com novas evidências, conflito de resultados e cobertura das estatísticas. O build Release do CLI passou com zero erros e warnings.
+- **Limitações** — PASS, FAIL, RESTART e QUIT foram validados com evidências sintéticas. O lazer real forneceu arquivos de replay, sem classificação de resultado. Scores históricos sem replay, captura real do tosu e reconexão do consumidor continuam pendentes. A varredura descobre arquivos relendo o depósito a cada importação. O perfil é selecionado explicitamente e a origem de arquivo não carrega identidade confirmada do jogador.
+
+**Próxima ação** — na Fase 4, carregar a biblioteca por beatmapset, dificuldade e versão e abrir a comparação de dois registros reais da mesma dificuldade, com classificação e cobertura visíveis. Fase 4 ainda não iniciada.

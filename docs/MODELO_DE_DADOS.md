@@ -1,6 +1,6 @@
 # Modelo de dados
 
-Contratos propostos para o gate da Fase 3. O esquema físico, migrações e índices serão testados nesse gate.
+Na Fase 3, SQLite persiste perfis, versões de mapa, replays, tentativas, scores identificados por origem e observações RAW. A [persistência](PERSISTENCIA.md) descreve as migrações e a importação. Os demais contratos abaixo orientam os próximos gates.
 
 | Entidade | Identidade e contrato inicial |
 | --- | --- |
@@ -16,3 +16,5 @@ Contratos propostos para o gate da Fase 3. O esquema físico, migrações e índ
 Repetir importação usa chave de observação estável e identificador de origem dentro do perfil. O hash do payload comprova integridade e pode detectar duplicata de arquivo. Respostas idênticas em instantes distintos e partidas com score igual ainda podem representar tentativas distintas. Aproximação de horário, score e mapa só cria candidatos de vínculo. Preservar timezone quando conhecido e registrar chegada separadamente do relógio de origem. Campos ausentes são nulos com motivo.
 
 O domínio separa o observado (FACT), a amostra temporal externa (FACT_SNAPSHOT), a medida calculada (DERIVED) e a interpretação (INFERENCE). UNAVAILABLE carrega motivo. A cobertura deve dizer o que foi observado no período, por fonte e módulo, inclusive janelas offline e tentativas que ficaram abertas.
+
+Resultado é uma projeção versionada das evidências. PASS, FAIL, RESTART e QUIT dependem de fatos explícitos. Ausência ou conflito gera UNKNOWN. Elegibilidade e cobertura das métricas são definidas no [contrato analítico](ANALYTICS.md).

@@ -16,4 +16,6 @@ dotnet test tests/SourceSpikes.Tests -c Release
 
 Phase 2 provides two isolated command-line probes. History reads the lazer content store and reports SHA-256 verification and replay-to-map matches. The optional capture probe connects to the local tosu v2 WebSocket. Follow the [probe guide](docs/PROVAS_TECNICAS.md) for commands and expected results. Current evidence and limitations are in [docs/STATUS.md](docs/STATUS.md). The [product scope](docs/PRODUTO.md) and [roadmap](docs/ROADMAP.md) are available in Brazilian Portuguese.
 
+Phase 3 adds profile-scoped SQLite persistence, replay import and evidence-based attempt outcomes. The [persistence guide](docs/PERSISTENCIA.md) covers building and running the history CLI.
+
 The project source is under the [MIT License](LICENSE).
